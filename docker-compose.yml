@@ -8,7 +8,9 @@ services:
         image: laravel-app
         container_name: laravel_app
         volumes:
-            - .:/var/www # Mount directory ke dalam container
+            - .:/var/www
+            - ./vendor:/var/www/vendor # Bind-mount vendor untuk mempertahankan hasil composer install
+            - ./node_modules:/var/www/node_modules # Optional jika ada Node.js
         networks:
             - app-network
 
@@ -16,10 +18,10 @@ services:
         image: nginx:latest
         container_name: nginx_web
         ports:
-            - "8000:80" # Mengakses aplikasi di port 8000
+            - "8000:80"
         volumes:
             - .:/var/www
-            - ./nginx.conf:/etc/nginx/conf.d/default.conf # Gunakan konfigurasi Nginx custom
+            - ./nginx.conf:/etc/nginx/conf.d/default.conf
         depends_on:
             - app
         networks:
@@ -29,7 +31,7 @@ services:
         image: mysql:latest
         container_name: mysql_db
         ports:
-            - "3307:3306" # Mengakses database di port 3306
+            - "3307:3306"
         environment:
             MYSQL_DATABASE: inventory_db
             MYSQL_USER: user
